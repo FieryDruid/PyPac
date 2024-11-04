@@ -1,0 +1,66 @@
+[project]
+name = "pypac"
+version = "0.0.1"
+description = "Work with you pac script in browser."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    {name= "Pavel Krasnobaev", email = "mrfierydruid@yandex.ru"}
+]
+
+dependencies = [
+    "duckdb>=1.1.1",
+    "fastapi[standard]>=0.115.0",
+    "loguru>=0.7.2",
+    "pydantic-settings>=2.6.1",
+    "pyuac>=0.0.3",
+    "pywin32>=307",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D211", "D213"]
+dummy-variable-rgx = "^_+$"
+
+[tool.ruff.lint.per-file-ignores]
+"main.py" = ["S104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.flake8-annotations]
+suppress-none-returning = true
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+combine-as-imports = true
+force-wrap-aliases = true
+length-sort = true
+lines-between-types = 1
+order-by-type = true
+extra-standard-library = ["path"]
+
+[tool.ruff.lint.pylint]
+allow-dunder-method-names = ["__tablename__", "__table_args__"]
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["pydantic.validator", "pydantic.model_validator", "pydantic.field_validator"]
+
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
