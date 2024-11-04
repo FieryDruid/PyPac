@@ -7,6 +7,9 @@ from duckdb import DuckDBPyConnection
 from loguru import logger
 
 from enums import ProxyStatus
+from settings import get_settings
+
+settings = get_settings()
 
 RULES_PK_SEQUENCE = 'rules_id_seq'
 
@@ -30,7 +33,7 @@ def set_proxy_settings_as(proxy_status: ProxyStatus) -> None:
                 'AutoConfigURL',
                 0,
                 winreg.REG_SZ,
-                f'http://localhost:8080/get_pac?mark={RuntimeMark.time_mark}',
+                f'http://localhost:{settings.PORT}/get_pac?mark={RuntimeMark.time_mark}',
             )
             winreg.SetValueEx(key, 'AutoConfigProxy', 0, winreg.REG_DWORD, proxy_status)
     except FileNotFoundError:

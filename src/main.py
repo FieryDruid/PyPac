@@ -47,6 +47,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(
     docs_url='/docs',
     lifespan=lifespan,
+    title='PyPac swagger.',
 )
 
 

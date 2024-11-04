@@ -15,13 +15,13 @@ from dependencies.get_rules import UserRules
 router = APIRouter()
 
 
-@router.post('/set_rule', status_code=200)
+@router.post('/set_rule', status_code=200, description='Add new rule.')
 def set_rule(db: DbConnect, rule: str) -> int:
-    """_summary_.
+    """Add new rule.
 
-    :param db: _description_
-    :param rule: _description_
-    :return: _description_
+    :param db: database connection.
+    :param rule: rule string.
+    :return: rule id.
     """
     query = f"INSERT INTO rules (id, rule, is_active) VALUES (nextval('{RULES_PK_SEQUENCE}'), ?, ?) RETURNING id"  # noqa: S608
     result = db.execute(query, [rule, True])
