@@ -65,7 +65,7 @@ app.include_router(pac_router, tags=['PAC-script'])
 
 if __name__ == '__main__':
     uvicorn.run(
-        'main:app',
+        app,
         host='0.0.0.0',
         port=settings.PORT,
         reload=False,

@@ -12,7 +12,7 @@ PROXY_ADDRESS = f"var __PROXY__ = 'PROXY {settings.PROXY_DOMAIN}:{settings.PROXY
 START_USERRULES = 'var __USERRULES__ = ['
 END_USERRULES = '];'
 
-base_pac_path = Path().cwd() / 'src' / 'pac' / 'pac.txt'
+base_pac_path = Path().cwd() / 'pac.txt'
 
 with base_pac_path.open('r', encoding='utf-8') as file:
     main_pac_content = file.read()

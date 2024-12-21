@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 from enums import ProxyStatus
 from utils import RULES_PK_SEQUENCE, RuntimeMark, set_proxy_settings_as
 from pac.generator import gen_pac_content
+from database.rules_repository import RulesRepository
 from dependencies.db import DbConnect
 from dependencies.get_rules import UserRules
 
@@ -27,6 +28,7 @@ def set_rule(db: DbConnect, rule: str) -> int:
     result = db.execute(query, [rule, True])
     rule_id: int = result.fetchone()[0]
     reset_proxy_settings()
+    RulesRepository().invalidate()
     return rule_id
 
 
@@ -39,6 +41,7 @@ def remove_rule(db: DbConnect, rule: str) -> None:
     """
     db.execute('DELETE FROM rules WHERE rule = ?', [rule])
     reset_proxy_settings()
+    RulesRepository().invalidate()
 
 
 @router.get('/get_pac', description='Get PAC-script.')
