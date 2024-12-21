@@ -1,20 +1,22 @@
 """Get rules dependencies."""
 
 from typing import Annotated, TypeAlias
-from collections.abc import Generator
+from threading import Lock
 
 from fastapi import Depends
 
-from dependencies.db import DbConnect
+from database.rules_repository import RulesRepository
+
+lock = Lock()
 
 
-def get_user_rules(db: DbConnect) -> Generator[str, None, None]:
+def get_user_rules() -> list[str]:
     """Get all active user rules.
 
     :param db: Database connection.
     :yield: active proxy rule string from database.
     """
-    return (item[0] for item in db.sql('SELECT rule FROM rules WHERE is_active = True;').fetchall())
+    return RulesRepository().get_rules().copy()
 
 
-UserRules: TypeAlias = Annotated[Generator[str], Depends(get_user_rules)]
+UserRules: TypeAlias = Annotated[list[str], Depends(get_user_rules)]
