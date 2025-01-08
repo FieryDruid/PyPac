@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from enums import ProxyStatus
-from utils import init_db, set_proxy_settings_as
+from utils import init_db, set_auto_startup, set_proxy_settings_as
 from settings import get_settings
 from routes.pac import router as pac_router
 from database.connection import get_connection
@@ -34,6 +34,8 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     """
     init_logger()
     set_proxy_settings_as(ProxyStatus.ENABLED)
+    if settings.IS_BUNDLED:
+        set_auto_startup(enable_auto_startup=settings.AUTO_STARTUP)
 
     db = get_connection()
     init_db(db)

@@ -1,7 +1,10 @@
 """Utils module."""
 
+import sys
 import winreg
 import datetime
+
+from contextlib import suppress
 
 from duckdb import DuckDBPyConnection
 from loguru import logger
@@ -37,12 +40,38 @@ def set_proxy_settings_as(proxy_status: ProxyStatus) -> None:
             )
             winreg.SetValueEx(key, 'AutoConfigProxy', 0, winreg.REG_DWORD, proxy_status)
     except FileNotFoundError:
-        logger.error('Registry key not found.')
+        logger.error('AutoConfigURL registry key not found.')
+        raise
     except Exception:  # noqa: BLE001
         logger.exception('Unexpected error while change proxy status.')
     else:
         logger.debug('Proxy {status}', status='enabled' if proxy_status else 'disabled')
 
+
+def set_auto_startup(*, enable_auto_startup: bool) -> None:
+    """Set auto startup for PyPac server."""
+    key_path = r'Software\Microsoft\Windows\CurrentVersion\Run'
+    value_name = 'PyPac server'
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_SET_VALUE) as key:
+            if enable_auto_startup:
+                winreg.SetValueEx(
+                    key,
+                    value_name,
+                    0,
+                    winreg.REG_SZ,
+                    sys.executable,
+                )
+            else:
+                with suppress(FileNotFoundError):
+                    winreg.DeleteValue(key, value_name)
+    except FileNotFoundError:
+        logger.error('AutoStartup registry key not found.')
+        raise
+    except Exception:  # noqa: BLE001
+        logger.exception('Unexpected error while set auto startup status.')
+    else:
+        logger.debug('Auto startup {status}', status='enabled' if enable_auto_startup else 'disabled')
 
 def init_db(db: DuckDBPyConnection) -> None:
     """Initialize database.
